@@ -1,4 +1,4 @@
-import { Download, BookOpen, FileText, Zap } from 'lucide-react'
+import { Download, FileText } from 'lucide-react'
 
 interface Resource {
   id: number
@@ -12,51 +12,11 @@ interface Resource {
 const resources: Resource[] = [
   {
     id: 1,
-    title: "Guide : Les 7 piliers de la résilience",
-    description: "Un guide complet pour construire une résilience inébranlable face aux défis de la vie.",
+    title: "Guide Mental – Transforme ta douleur en puissance",
+    description: "Un guide puissant pour comprendre ta souffrance, renforcer ton mental, développer la discipline, et devenir la version la plus forte de toi-même.",
     type: "PDF",
     icon: <FileText className="text-gold-500" size={24} />,
-    downloadLink: "#"
-  },
-  {
-    id: 2,
-    title: "Workbook : 30 jours de transformation",
-    description: "Un carnet d'exercices pratiques pour transformer ton mindset en 30 jours.",
-    type: "PDF",
-    icon: <BookOpen className="text-gold-500" size={24} />,
-    downloadLink: "#"
-  },
-  {
-    id: 3,
-    title: "Affirmations quotidiennes pour la force mentale",
-    description: "Une collection d'affirmations puissantes à pratiquer chaque jour.",
-    type: "PDF",
-    icon: <Zap className="text-gold-500" size={24} />,
-    downloadLink: "#"
-  },
-  {
-    id: 4,
-    title: "Méditation guidée : Retrouver ta force intérieure",
-    description: "Une méditation de 15 minutes pour reconnecter avec ta puissance intérieure.",
-    type: "Audio",
-    icon: <FileText className="text-gold-500" size={24} />,
-    downloadLink: "#"
-  },
-  {
-    id: 5,
-    title: "Checklist : Construire ton plan de transformation",
-    description: "Une checklist pratique pour structurer ton parcours de transformation.",
-    type: "PDF",
-    icon: <BookOpen className="text-gold-500" size={24} />,
-    downloadLink: "#"
-  },
-  {
-    id: 6,
-    title: "Ressources recommandées : Livres & Podcasts",
-    description: "Ma sélection personnelle des meilleures ressources pour ta croissance.",
-    type: "PDF",
-    icon: <Zap className="text-gold-500" size={24} />,
-    downloadLink: "#"
+    downloadLink: "/guide-mental.pdf"
   },
 ]
 
@@ -109,10 +69,14 @@ export default function Resources() {
                 </p>
 
                 {/* Download Button */}
-                <button className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gold-500/20 text-gold-500 rounded-lg hover:bg-gold-500/30 transition-colors font-medium">
+                <a
+                  href={resource.downloadLink}
+                  download
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gold-500/20 text-gold-500 rounded-lg hover:bg-gold-500/30 transition-colors font-medium"
+                >
                   <Download size={18} />
                   Télécharger
-                </button>
+                </a>
               </div>
             ))}
           </div>
@@ -138,9 +102,9 @@ export default function Resources() {
             <p className="text-gray-300 mb-6">
               Abonne-toi à notre newsletter pour être notifié des nouveaux guides et outils.
             </p>
-            <button className="btn-primary">
+            <a href="/newsletter" className="btn-primary">
               S'abonner
-            </button>
+            </a>
           </div>
         </div>
       </section>
