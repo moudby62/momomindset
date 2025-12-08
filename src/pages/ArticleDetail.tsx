@@ -1,5 +1,5 @@
-import { Clock, User, ArrowRight } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Clock, User, ArrowLeft, Share2 } from 'lucide-react'
 
 interface Article {
   id: number
@@ -10,7 +10,6 @@ interface Article {
   date: string
   readTime: string
   category: string
-  image: string
 }
 
 const articles: Article[] = [
@@ -68,8 +67,7 @@ Maintenant, il est temps de l'utiliser. Non pas pour te protéger du monde. Mais
     author: "Mohamoud Condé",
     date: "6 décembre 2024",
     readTime: "12 min",
-    category: "Guérison",
-    image: "bg-gradient-to-br from-gold-600/20 to-gold-600/5"
+    category: "Guérison"
   },
   {
     id: 2,
@@ -128,8 +126,7 @@ Et c'est la plus grande liberté qu'on puisse avoir.`,
     author: "Mohamoud Condé",
     date: "5 décembre 2024",
     readTime: "10 min",
-    category: "Force Mentale",
-    image: "bg-gradient-to-br from-gold-600/20 to-gold-600/5"
+    category: "Force Mentale"
   },
   {
     id: 3,
@@ -206,84 +203,140 @@ Alors commence dès demain. Ou mieux encore, commence aujourd'hui.
     author: "Mohamoud Condé",
     date: "4 décembre 2024",
     readTime: "11 min",
-    category: "Habitudes",
-    image: "bg-gradient-to-br from-gold-600/20 to-gold-600/5"
+    category: "Habitudes"
   },
 ]
 
-export default function Articles() {
+export default function ArticleDetail() {
+  const { id } = useParams()
   const navigate = useNavigate()
+  const article = articles.find(a => a.id === parseInt(id || '0'))
+
+  if (!article) {
+    return (
+      <div className="bg-dark-900 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-serif font-bold text-white mb-4">Article non trouvé</h1>
+          <button
+            onClick={() => navigate('/articles')}
+            className="btn-primary"
+          >
+            Retour aux articles
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const contentLines = article.content.split('\n\n')
+
   return (
     <div className="bg-dark-900 min-h-screen">
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-b from-gold-600/10 to-dark-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mb-4">
-            Articles & Conseils
+      {/* Header */}
+      <section className="py-12 bg-gradient-to-b from-gold-600/10 to-dark-900 border-b border-dark-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('/articles')}
+            className="flex items-center gap-2 text-gold-500 hover:text-gold-400 transition-colors mb-6"
+          >
+            <ArrowLeft size={20} />
+            Retour aux articles
+          </button>
+
+          {/* Title */}
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+            {article.title}
           </h1>
-          <p className="text-xl text-gray-300">
-            Développe ton mindset et ta force mentale avec nos articles inspirants
-          </p>
+
+          {/* Meta */}
+          <div className="flex flex-wrap items-center gap-6 text-gray-400 mb-6">
+            <div className="flex items-center gap-2">
+              <User size={18} />
+              <span>{article.author}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock size={18} />
+              <span>{article.readTime}</span>
+            </div>
+            <span className="px-3 py-1 bg-gold-500/20 text-gold-500 text-sm font-semibold rounded-full">
+              {article.category}
+            </span>
+          </div>
+
+          {/* Date */}
+          <p className="text-gray-500 text-sm">{article.date}</p>
         </div>
       </section>
 
-      {/* Articles Grid */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <article
-                key={article.id}
-                className="card border border-dark-700 hover:border-gold-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/10 flex flex-col animate-slideUp group cursor-pointer"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* Image placeholder */}
-                <div className={`h-40 rounded-lg mb-6 ${article.image}`}></div>
-
-                {/* Category */}
-                <div className="mb-3">
-                  <span className="inline-block px-3 py-1 bg-gold-500/20 text-gold-500 text-xs font-semibold rounded-full">
-                    {article.category}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-xl font-serif font-bold text-white mb-3 leading-tight flex-grow group-hover:text-gold-500 transition-colors">
-                  {article.title}
-                </h3>
-
-                {/* Excerpt */}
-                <p className="text-gray-400 mb-6 line-clamp-2">
-                  {article.excerpt}
+      {/* Content */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <article className="prose prose-invert max-w-none">
+            {contentLines.map((paragraph, index) => {
+              // Handle bold text
+              const parts = paragraph.split(/(\*\*[^*]+\*\*)/g)
+              return (
+                <p key={index} className="text-gray-300 leading-relaxed mb-6 text-lg">
+                  {parts.map((part, i) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return (
+                        <strong key={i} className="text-white font-semibold">
+                          {part.slice(2, -2)}
+                        </strong>
+                      )
+                    }
+                    return part
+                  })}
                 </p>
+              )
+            })}
+          </article>
 
-                {/* Meta */}
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-6 pb-6 border-b border-dark-700">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <Clock size={16} />
-                      <span>{article.readTime}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <User size={16} />
-                      <span>{article.author}</span>
-                    </div>
-                  </div>
-                </div>
+          {/* Share Section */}
+          <div className="mt-16 pt-8 border-t border-dark-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-serif font-bold text-white mb-2">
+                  Partage cet article
+                </h3>
+                <p className="text-gray-400">
+                  Si cet article t'a aidé, partage-le avec quelqu'un qui en aurait besoin.
+                </p>
+              </div>
+              <button className="flex items-center gap-2 px-6 py-3 bg-gold-500/20 text-gold-500 rounded-lg hover:bg-gold-500/30 transition-colors">
+                <Share2 size={20} />
+                Partager
+              </button>
+            </div>
+          </div>
 
-                {/* Read More */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">{article.date}</span>
+          {/* Related Articles */}
+          <div className="mt-16">
+            <h2 className="text-2xl font-serif font-bold text-white mb-8">
+              Autres articles
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {articles
+                .filter(a => a.id !== article.id)
+                .map(relatedArticle => (
                   <button
-                    onClick={() => navigate(`/article/${article.id}`)}
-                    className="flex items-center gap-2 text-gold-500 hover:text-gold-400 transition-colors font-medium"
+                    key={relatedArticle.id}
+                    onClick={() => navigate(`/article/${relatedArticle.id}`)}
+                    className="card border border-dark-700 hover:border-gold-500/50 transition-all text-left group"
                   >
-                    Lire plus
-                    <ArrowRight size={16} />
+                    <h3 className="font-serif font-bold text-white mb-2 group-hover:text-gold-500 transition-colors">
+                      {relatedArticle.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                      {relatedArticle.excerpt}
+                    </p>
+                    <div className="text-gold-500 text-sm font-medium">
+                      Lire l'article →
+                    </div>
                   </button>
-                </div>
-              </article>
-            ))}
+                ))}
+            </div>
           </div>
         </div>
       </section>

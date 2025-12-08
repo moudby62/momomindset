@@ -12,6 +12,7 @@ import Contact from './pages/Contact'
 import Newsletter from './pages/Newsletter'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ArticleDetail from './pages/ArticleDetail'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/daily-motivation" element={<DailyMotivation />} />
             <Route path="/articles" element={<Articles />} />
+            <Route path="/article/:id" element={<ArticleDetail />} />
             <Route path="/community" element={<Community />} />
             <Route path="/podcast" element={<Podcast />} />
             <Route path="/resources" element={<Resources />} />
